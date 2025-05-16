@@ -8,3 +8,6 @@ spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
 
 jwt.secret=
 jwt.expiration=172800000
+
+logging.level.org.springframework.security=DEBUG
+logging.level.com.url.analytics=DEBUG
