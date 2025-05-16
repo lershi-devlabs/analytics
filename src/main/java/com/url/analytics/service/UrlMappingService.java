@@ -85,4 +85,26 @@ public class UrlMappingService {
         return clickEvents.stream()
                 .collect(Collectors.groupingBy(click -> click.getClickDate().toLocalDate(), Collectors.counting()));
     }
+
+    public UrlMapping getOriginalUrl(String shortUrl, String ipAddress, String userAgent) {
+        UrlMapping urlMapping = urlMappingRepository.findByShortUrl(shortUrl);
+        if (urlMapping != null) {
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime windowStart = now.minusSeconds(10); // 10-second window
+            boolean recentClick = clickEventRepository.existsByUrlMappingAndIpAddressAndUserAgentAndClickDateBetween(
+                urlMapping, ipAddress, userAgent, windowStart, now
+            );
+            if (!recentClick) {
+                urlMapping.setClickCount(urlMapping.getClickCount() + 1);
+                urlMappingRepository.save(urlMapping);
+                ClickEvent clickEvent = new ClickEvent();
+                clickEvent.setClickDate(now);
+                clickEvent.setUrlMapping(urlMapping);
+                clickEvent.setIpAddress(ipAddress);
+                clickEvent.setUserAgent(userAgent);
+                clickEventRepository.save(clickEvent);
+            }
+        }
+        return urlMapping;
+    }
 }
