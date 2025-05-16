@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 @Data
-public class UrlMapping {
+public class UrlMapping extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
