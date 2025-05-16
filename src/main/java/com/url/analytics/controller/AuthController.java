@@ -1,5 +1,6 @@
 package com.url.analytics.controller;
 
+import com.url.analytics.dtos.LoginRequest;
 import com.url.analytics.dtos.RegisterRequest;
 import com.url.analytics.models.User;
 import com.url.analytics.service.UserService;
@@ -16,6 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private UserService userservice;
+
+    @PostMapping("/public/login")
+    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest){
+        return ResponseEntity.ok(userservice.authenticateUser(loginRequest));
+    }
 
     @PostMapping("/public/register")
     public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest){
