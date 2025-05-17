@@ -44,22 +44,31 @@ User registered successfully
 ## UrlMappingController (`/api/urls`)
 
 ### POST `/api/urls/shorten`
-Create a short URL.
+Create a short URL with optional custom alias, custom domain, and UTM auto-tagging.
 
 **Request Body:**
 ```json
 {
-  "originalUrl": "https://example.com"
+  "originalUrl": "https://example.com",
+  "customAlias": "launch", // optional
+  "customDomain": "links.mysite.com", // optional
+  "autoUtm": true,         // optional, default true
+  "utmCampaign": "may2025" // optional
 }
 ```
 **Response:**
 ```json
 {
   "id": 1,
-  "shortUrl": "abc123",
-  "originalUrl": "https://example.com"
+  "shortUrl": "launch",
+  "customDomain": "links.mysite.com",
+  "originalUrl": "https://example.com?utm_source=shortener&utm_medium=link&utm_campaign=may2025"
 }
 ```
+- If `customAlias` is omitted, a random alias is generated.
+- If `customDomain` is provided, the short link will use that domain (e.g., `links.mysite.com/launch`).
+- If `autoUtm` is true or omitted, UTM parameters are appended.
+- If `utmCampaign` is provided, it is used for the `utm_campaign` tag; otherwise, the current year and month are used.
 
 ### GET `/api/urls/myurls`
 Get all URLs for the authenticated user.
@@ -178,6 +187,61 @@ Get country breakdown.
 ### GET `/{shortUrl}`
 Redirect to the original URL for a given short URL.
 
+- If the request's Host header matches a custom domain, the redirect will resolve using both the custom domain and the short URL alias.
+- If no custom domain match is found, the default domain and alias are used.
+
 **Response:**
 - HTTP 302 Redirects to the original URL if found.
-- HTTP 404 if not found. 
+- HTTP 404 if not found.
+
+---
+
+## Custom Domain Verification (`/api/domains`)
+
+### POST `/api/domains/request-verification`
+Request verification for a custom domain.
+
+**Request Body:**
+```json
+{
+  "domain": "links.montek.dev"
+}
+```
+**Response:**
+```json
+{
+  "domain": "links.montek.dev",
+  "verificationCode": "abc123xyz",
+  "apex": false,
+  "lastCheckedStatus": "no site",
+  "warning": null,
+  "instructions": "Add a TXT record: Name: _shortener-verification.links.montek.dev, Value: abc123xyz"
+}
+```
+- If `apex` is true and `lastCheckedStatus` is "active site", a warning is included about taking over the root domain.
+
+### POST `/api/domains/verify`
+Verify the custom domain by checking the DNS TXT record.
+
+**Request Body:**
+```json
+{
+  "domain": "links.montek.dev"
+}
+```
+**Response:**
+- `"Domain verified successfully"` if successful
+- `"Verification failed. TXT record not found or incorrect."` if not
+
+### GET `/api/domains/status/{domain}`
+Get the status of a custom domain.
+
+**Response:**
+```json
+{
+  "id": 1,
+  "domain": "links.montek.dev",
+  "verified": true,
+  ...
+}
+``` 

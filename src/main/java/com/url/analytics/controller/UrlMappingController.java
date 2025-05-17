@@ -2,6 +2,7 @@ package com.url.analytics.controller;
 
 import com.url.analytics.dtos.ClickEventDTO;
 import com.url.analytics.dtos.UrlMappingDTO;
+import com.url.analytics.dtos.ShortenUrlRequest;
 import com.url.analytics.models.User;
 import com.url.analytics.service.UrlMappingService;
 import com.url.analytics.service.UserService;
@@ -27,12 +28,10 @@ public class UrlMappingController {
     // {"originalUrl": "https://example.com"}
     @PostMapping("/shorten")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<UrlMappingDTO> createShortUrl(@RequestBody Map<String, String> request,
+    public ResponseEntity<UrlMappingDTO> createShortUrl(@RequestBody ShortenUrlRequest request,
                                                         Principal principal) {
-        String originalUrl = request.get("originalUrl");
         User user = userService.findByUsername(principal.getName());
-        userService.findByUsername(principal.getName());
-        UrlMappingDTO urlMappingDTO = urlMappingService.createShortUrl(originalUrl, user);
+        UrlMappingDTO urlMappingDTO = urlMappingService.createShortUrl(request, user);
         return ResponseEntity.ok(urlMappingDTO);
     }
 

@@ -23,8 +23,19 @@ public class RedirectController {
         String ipAddress = request.getRemoteAddr();
         String userAgent = request.getHeader("User-Agent");
         String referrer = request.getHeader("Referer");
-        
-        UrlMapping urlMapping = urlMappingService.getOriginalUrl(shortUrl, ipAddress, userAgent);
+        String host = request.getHeader("Host");
+
+        UrlMapping urlMapping;
+        // Try to resolve by custom domain first
+        if (host != null && !host.isBlank()) {
+            urlMapping = urlMappingService.getOriginalUrlByDomain(host, shortUrl);
+        } else {
+            urlMapping = null;
+        }
+        // Fallback to default logic if not found
+        if (urlMapping == null) {
+            urlMapping = urlMappingService.getOriginalUrl(shortUrl, ipAddress, userAgent);
+        }
         if (urlMapping != null) {
             // Create and process click event
             ClickEvent clickEvent = new ClickEvent();
@@ -33,9 +44,7 @@ public class RedirectController {
             clickEvent.setUserAgent(userAgent);
             clickEvent.setReferrer(referrer);
             clickEvent.setClickDate(java.time.LocalDateTime.now());
-            
             analyticsService.processClickEvent(clickEvent);
-            
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.add("Location", urlMapping.getOriginalUrl());
             return ResponseEntity.status(302).headers(httpHeaders).build();

@@ -2,6 +2,7 @@ package com.url.analytics.service;
 
 import com.url.analytics.dtos.ClickEventDTO;
 import com.url.analytics.dtos.UrlMappingDTO;
+import com.url.analytics.dtos.ShortenUrlRequest;
 import com.url.analytics.models.ClickEvent;
 import com.url.analytics.models.UrlMapping;
 import com.url.analytics.models.User;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,13 +26,34 @@ public class UrlMappingService {
     private UrlMappingRepository urlMappingRepository;
     private ClickEventRepository clickEventRepository;
 
-    public UrlMappingDTO createShortUrl(String originalUrl, User user) {
-        String shortUrl = generateShortUrl();
+    public UrlMappingDTO createShortUrl(ShortenUrlRequest request, User user) {
+        String alias = request.getCustomAlias();
+        if (alias != null && !alias.isBlank()) {
+            if (isReservedWord(alias) || urlMappingRepository.findByShortUrl(alias) != null) {
+                throw new IllegalArgumentException("Alias is reserved or already taken.");
+            }
+        } else {
+            alias = generateShortUrl();
+        }
+
+        String customDomain = request.getCustomDomain();
+        if (customDomain != null && !customDomain.isBlank()) {
+            if (!isValidDomain(customDomain)) {
+                throw new IllegalArgumentException("Invalid custom domain format.");
+            }
+        }
+
+        String finalUrl = request.getOriginalUrl();
+        if (request.getAutoUtm() == null || request.getAutoUtm()) {
+            finalUrl = appendUtmParams(finalUrl, request.getUtmCampaign());
+        }
+
         UrlMapping urlMapping = new UrlMapping();
-        urlMapping.setOriginalUrl(originalUrl);
-        urlMapping.setShortUrl(shortUrl);
+        urlMapping.setOriginalUrl(finalUrl);
+        urlMapping.setShortUrl(alias);
         urlMapping.setUser(user);
         urlMapping.setCreatedDate(LocalDateTime.now());
+        urlMapping.setCustomDomain(customDomain);
         UrlMapping savedUrlMapping = urlMappingRepository.save(urlMapping);
         return convertToDto(savedUrlMapping);
     }
@@ -108,5 +131,31 @@ public class UrlMappingService {
     public UrlMapping getUrlMapping(Long id) {
         return urlMappingRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("UrlMapping not found with id: " + id));
+    }
+
+    private boolean isReservedWord(String alias) {
+        return Set.of("login", "api", "admin", "register", "auth", "urls", "events", "analytics")
+                .contains(alias.toLowerCase());
+    }
+
+    private String appendUtmParams(String url, String campaign) {
+        String utm = "utm_source=shortener&utm_medium=link&utm_campaign=" +
+            (campaign != null && !campaign.isBlank() ? campaign : java.time.YearMonth.now().toString().toLowerCase());
+        if (url.contains("?")) {
+            return url + "&" + utm;
+        } else {
+            return url + "?" + utm;
+        }
+    }
+
+    private boolean isValidDomain(String domain) {
+        // Simple regex for domain validation (does not check ownership)
+        return domain.matches("^(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}$");
+    }
+
+    public UrlMapping getOriginalUrlByDomain(String customDomain, String shortUrl) {
+        return urlMappingRepository.findAll().stream()
+            .filter(mapping -> shortUrl.equals(mapping.getShortUrl()) && customDomain.equalsIgnoreCase(mapping.getCustomDomain()))
+            .findFirst().orElse(null);
     }
 }

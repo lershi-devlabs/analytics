@@ -23,4 +23,7 @@ public class UrlMapping extends Auditable {
 
     @OneToMany(mappedBy = "urlMapping")
     private List<ClickEvent> clickEvents;
+
+    @Column
+    private String customDomain; // optional, for custom domains
 }
