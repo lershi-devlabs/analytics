@@ -27,12 +27,16 @@ public class AuthController {
 
     @PostMapping("/public/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest registerRequest){
-        User user = new User();
-        user.setUsername(registerRequest.getUsername());
-        user.setPassword(registerRequest.getPassword());
-        user.setEmail(registerRequest.getEmail());
-        user.setRole(Role.ROLE_USER);
-        userservice.registerUser(user);
-        return ResponseEntity.ok("User registered successfully");
+        try {
+            User user = new User();
+            user.setUsername(registerRequest.getUsername());
+            user.setPassword(registerRequest.getPassword());
+            user.setEmail(registerRequest.getEmail());
+            user.setRole(Role.ROLE_USER);
+            userservice.registerUser(user);
+            return ResponseEntity.ok("User registered successfully");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
