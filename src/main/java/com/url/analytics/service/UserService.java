@@ -47,8 +47,7 @@ public class UserService {
                         username,
                         loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        String jwt = jwtUtils.generateToken(userDetails);
+        String jwt = jwtUtils.generateToken(authentication);
         return new JwtAuthenticationResponse(jwt);
     }
 

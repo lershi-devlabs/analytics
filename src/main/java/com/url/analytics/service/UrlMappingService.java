@@ -83,7 +83,10 @@ public class UrlMappingService {
         List<UrlMapping> urlMappings = urlMappingRepository.findByUser(user);
         List<ClickEvent> clickEvents = clickEventRepository.findByUrlMappingInAndClickDateBetween(urlMappings, start.atStartOfDay(), end.plusDays(1).atStartOfDay());
         return clickEvents.stream()
-                .collect(Collectors.groupingBy(click -> click.getClickDate().toLocalDate(), Collectors.counting()));
+                .collect(Collectors.groupingBy(
+                    click -> click.getClickDate().toLocalDate(),
+                    Collectors.counting()
+                ));
     }
 
     public UrlMapping getOriginalUrl(String shortUrl, String ipAddress, String userAgent) {
@@ -100,5 +103,10 @@ public class UrlMappingService {
             }
         }
         return urlMapping;
+    }
+
+    public UrlMapping getUrlMapping(Long id) {
+        return urlMappingRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("UrlMapping not found with id: " + id));
     }
 }
