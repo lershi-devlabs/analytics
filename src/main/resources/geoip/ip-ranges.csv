@@ -1,0 +1,28 @@
+ip_start,ip_end,country,city,region,postal_code,latitude,longitude,timezone
+# United States IP ranges (ARIN allocations)
+3232235777,3232235778,United States,New York,New York,10001,40.7128,-74.0060,America/New_York
+3232235779,3232235780,United States,Los Angeles,California,90001,34.0522,-118.2437,America/Los_Angeles
+
+# Russian IP ranges (RIPE NCC allocations)
+3278190337,3278190338,Russia,Moscow,Moscow,101000,55.7558,37.6173,Europe/Moscow
+3278190339,3278190340,Russia,St. Petersburg,St. Petersburg,190000,59.9343,30.3351,Europe/Moscow
+
+# Japanese IP ranges (APNIC allocations)
+3232235781,3232235782,Japan,Tokyo,Tokyo,100-0001,35.6762,139.6503,Asia/Tokyo
+3232235783,3232235784,Japan,Osaka,Osaka,530-0001,34.6937,135.5023,Asia/Tokyo
+
+# UK IP ranges (RIPE NCC allocations)
+3232235785,3232235786,United Kingdom,London,England,EC1A,51.5074,-0.1278,Europe/London
+3232235787,3232235788,United Kingdom,Manchester,England,M1,53.4808,-2.2426,Europe/London
+
+# Indian IP ranges (APNIC allocations)
+3232235789,3232235790,India,Mumbai,Maharashtra,400001,19.0760,72.8777,Asia/Kolkata
+3232235791,3232235792,India,Delhi,Delhi,110001,28.6139,77.2090,Asia/Kolkata
+
+# Brazilian IP ranges (LACNIC allocations)
+3232235793,3232235794,Brazil,São Paulo,São Paulo,01310,23.5505,-46.6333,America/Sao_Paulo
+3232235795,3232235796,Brazil,Rio de Janeiro,Rio de Janeiro,20000,22.9068,-43.1729,America/Sao_Paulo
+
+# South African IP ranges (AFRINIC allocations)
+3232235797,3232235798,South Africa,Johannesburg,Gauteng,2000,26.2041,28.0473,Africa/Johannesburg
+3232235799,3232235800,South Africa,Cape Town,Western Cape,8001,33.9249,18.4241,Africa/Johannesburg 

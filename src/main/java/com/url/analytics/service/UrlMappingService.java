@@ -97,12 +97,6 @@ public class UrlMappingService {
             if (!recentClick) {
                 urlMapping.setClickCount(urlMapping.getClickCount() + 1);
                 urlMappingRepository.save(urlMapping);
-                ClickEvent clickEvent = new ClickEvent();
-                clickEvent.setClickDate(now);
-                clickEvent.setUrlMapping(urlMapping);
-                clickEvent.setIpAddress(ipAddress);
-                clickEvent.setUserAgent(userAgent);
-                clickEventRepository.save(clickEvent);
             }
         }
         return urlMapping;

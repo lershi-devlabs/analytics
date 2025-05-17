@@ -80,6 +80,11 @@
 			<artifactId>hibernate-validator</artifactId>
 			<version>7.0.5.Final</version>
 		</dependency>
+		<dependency>
+			<groupId>eu.bitwalker</groupId>
+			<artifactId>UserAgentUtils</artifactId>
+			<version>1.21</version>
+		</dependency>
 	</dependencies>
 
 	<build>
