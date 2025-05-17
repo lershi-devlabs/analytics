@@ -1,0 +1,27 @@
+<configuration>
+  <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+      <fieldNames>
+        <timestamp>timestamp</timestamp>
+        <level>level</level>
+        <thread>thread</thread>
+        <logger>logger</logger>
+        <message>message</message>
+        <context>context</context>
+        <exception>exception</exception>
+        <mdc>mdc</mdc>
+      </fieldNames>
+      <customFields>{"service":"analytics-backend"}</customFields>
+    </encoder>
+  </appender>
+
+  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <file>/logs/app.log</file>
+    <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+  </appender>
+
+  <root level="INFO">
+    <appender-ref ref="JSON"/>
+    <appender-ref ref="FILE"/>
+  </root>
+</configuration> 

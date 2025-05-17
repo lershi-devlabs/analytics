@@ -1,3 +1,4 @@
+version: '3.8'
 services:
   db:
     image: mysql:8.0
@@ -5,25 +6,20 @@ services:
     environment:
       MYSQL_DATABASE: analyticsdb
       MYSQL_USER: analytics
-      MYSQL_PASSWORD: analytics_pass
-      MYSQL_ROOT_PASSWORD: root_pass
+      MYSQL_PASSWORD: strong_prod_password
+      MYSQL_ROOT_PASSWORD: strong_root_password
     ports:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
-      interval: 5s
-      timeout: 5s
-      retries: 20
 
   backend:
-    build: .
+    image: dockerhub-username/analytics-sb-backend:latest
+    restart: always
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     env_file:
-      - .env
+      - .env.prod
     ports:
       - "8080:8080"
     volumes:
@@ -31,12 +27,14 @@ services:
 
   loki:
     image: grafana/loki:2.9.3
+    restart: always
     ports:
       - "3100:3100"
     command: -config.file=/etc/loki/local-config.yaml
 
   promtail:
     image: grafana/promtail:2.9.3
+    restart: always
     volumes:
       - ./logs:/var/log/app
       - ./promtail-config.yaml:/etc/promtail/config.yaml
@@ -44,10 +42,11 @@ services:
 
   grafana:
     image: grafana/grafana:10.2.3
+    restart: always
     ports:
       - "3000:3000"
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=Analytics@2024
+      - GF_SECURITY_ADMIN_PASSWORD=your_strong_grafana_password
 
 volumes:
   db_data: 
