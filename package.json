@@ -1,0 +1,27 @@
+{
+  "name": "analytics",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "prepare": "husky install",
+    "build": "nx run-many --target=build --all",
+    "test": "nx run-many --target=test --all",
+    "lint": "nx run-many --target=lint --all"
+  },
+  "private": true,
+  "dependencies": {
+    "@nx/js": "^18.0.0",
+    "@nx/workspace": "^18.0.0",
+    "nx": "^18.0.0"
+  },
+  "devDependencies": {
+    "@nx/next": "^18.0.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "prettier": "^3.0.0",
+    "husky": "^8.0.0"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
+}
