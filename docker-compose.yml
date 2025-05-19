@@ -29,25 +29,25 @@ services:
     volumes:
       - ./logs:/logs
 
-  loki:
-    image: grafana/loki:2.9.3
-    ports:
-      - "3100:3100"
-    command: -config.file=/etc/loki/local-config.yaml
+  # loki:
+  #   image: grafana/loki:2.9.3
+  #   ports:
+  #     - "3100:3100"
+  #   command: -config.file=/etc/loki/local-config.yaml
 
-  promtail:
-    image: grafana/promtail:2.9.3
-    volumes:
-      - ./logs:/var/log/app
-      - ./promtail-config.yaml:/etc/promtail/config.yaml
-    command: -config.file=/etc/promtail/config.yaml
+  # promtail:
+  #   image: grafana/promtail:2.9.3
+  #   volumes:
+  #     - ./logs:/var/log/app
+  #     - ./promtail-config.yaml:/etc/promtail/config.yaml
+  #   command: -config.file=/etc/promtail/config.yaml
 
-  grafana:
-    image: grafana/grafana:10.2.3
-    ports:
-      - "3000:3000"
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=Analytics@2024
+  # grafana:
+  #   image: grafana/grafana:10.2.3
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - GF_SECURITY_ADMIN_PASSWORD=Analytics@2024
 
 volumes:
   db_data: 
