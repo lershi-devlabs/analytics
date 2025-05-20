@@ -9,4 +9,5 @@ public class ShortenUrlRequest {
     private String customDomain; // optional, for future use
     private Boolean autoUtm; // optional, default true
     private String utmCampaign; // optional
+    private String projectId;
 } 

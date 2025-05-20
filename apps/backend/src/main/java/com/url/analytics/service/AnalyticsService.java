@@ -1,6 +1,7 @@
 package com.url.analytics.service;
 
 import com.url.analytics.models.ClickEvent;
+import com.url.analytics.models.Project;
 import com.url.analytics.repository.ClickEventRepository;
 import com.url.analytics.service.geoip.GeoLocationService;
 import eu.bitwalker.useragentutils.UserAgent;
@@ -105,8 +106,8 @@ public class AnalyticsService {
     }
 
     // Analytics Queries
-    public Map<String, Long> getTopPages(LocalDateTime startDate, LocalDateTime endDate) {
-        return clickEventRepository.findByClickDateBetween(startDate, endDate)
+    public Map<String, Long> getTopPages(Project project, LocalDateTime startDate, LocalDateTime endDate) {
+        return clickEventRepository.findByProjectAndClickDateBetween(project, startDate, endDate)
                 .stream()
                 .collect(Collectors.groupingBy(
                     event -> event.getUrlMapping().getOriginalUrl(),
@@ -114,8 +115,8 @@ public class AnalyticsService {
                 ));
     }
 
-    public Map<String, Long> getTopReferrers(LocalDateTime startDate, LocalDateTime endDate) {
-        return clickEventRepository.findByClickDateBetween(startDate, endDate)
+    public Map<String, Long> getTopReferrers(Project project, LocalDateTime startDate, LocalDateTime endDate) {
+        return clickEventRepository.findByProjectAndClickDateBetween(project, startDate, endDate)
                 .stream()
                 .filter(event -> event.getReferrer() != null && !event.getReferrer().isEmpty())
                 .collect(Collectors.groupingBy(
@@ -124,8 +125,8 @@ public class AnalyticsService {
                 ));
     }
 
-    public Map<String, Map<String, Long>> getDeviceBreakdown(LocalDateTime startDate, LocalDateTime endDate) {
-        return clickEventRepository.findByClickDateBetween(startDate, endDate)
+    public Map<String, Map<String, Long>> getDeviceBreakdown(Project project, LocalDateTime startDate, LocalDateTime endDate) {
+        return clickEventRepository.findByProjectAndClickDateBetween(project, startDate, endDate)
                 .stream()
                 .collect(Collectors.groupingBy(
                     ClickEvent::getDeviceType,
@@ -136,8 +137,8 @@ public class AnalyticsService {
                 ));
     }
 
-    public Map<String, Map<String, Long>> getCountryBreakdown(LocalDateTime startDate, LocalDateTime endDate) {
-        return clickEventRepository.findByClickDateBetween(startDate, endDate)
+    public Map<String, Map<String, Long>> getCountryBreakdown(Project project, LocalDateTime startDate, LocalDateTime endDate) {
+        return clickEventRepository.findByProjectAndClickDateBetween(project, startDate, endDate)
                 .stream()
                 .collect(Collectors.groupingBy(
                     ClickEvent::getCountry,

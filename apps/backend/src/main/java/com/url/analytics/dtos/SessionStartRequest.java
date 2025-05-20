@@ -6,4 +6,5 @@ import lombok.Data;
 public class SessionStartRequest {
     private String ipAddress;
     private String userAgent;
+    private String projectId;
 } 

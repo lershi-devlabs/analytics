@@ -6,6 +6,7 @@ import com.url.analytics.dtos.ShortenUrlRequest;
 import com.url.analytics.models.ClickEvent;
 import com.url.analytics.models.UrlMapping;
 import com.url.analytics.models.User;
+import com.url.analytics.models.Project;
 import com.url.analytics.repository.ClickEventRepository;
 import com.url.analytics.repository.UrlMappingRepository;
 import lombok.AllArgsConstructor;
@@ -26,7 +27,7 @@ public class UrlMappingService {
     private UrlMappingRepository urlMappingRepository;
     private ClickEventRepository clickEventRepository;
 
-    public UrlMappingDTO createShortUrl(ShortenUrlRequest request, User user) {
+    public UrlMappingDTO createShortUrl(ShortenUrlRequest request, User user, Project project) {
         String alias = request.getCustomAlias();
         if (alias != null && !alias.isBlank()) {
             if (isReservedWord(alias) || urlMappingRepository.findByShortUrl(alias) != null) {
@@ -54,19 +55,13 @@ public class UrlMappingService {
         urlMapping.setUser(user);
         urlMapping.setCreatedDate(LocalDateTime.now());
         urlMapping.setCustomDomain(customDomain);
+        urlMapping.setProject(project);
         UrlMapping savedUrlMapping = urlMappingRepository.save(urlMapping);
         return convertToDto(savedUrlMapping);
     }
 
     private UrlMappingDTO convertToDto(UrlMapping urlMapping) {
-        UrlMappingDTO urlMappingDTO = new UrlMappingDTO();
-        urlMappingDTO.setId(urlMapping.getId());
-        urlMappingDTO.setOriginalUrl(urlMapping.getOriginalUrl());
-        urlMappingDTO.setShortUrl(urlMapping.getShortUrl());
-        urlMappingDTO.setClickCount(urlMapping.getClickCount());
-        urlMappingDTO.setCreatedDate(urlMapping.getCreatedDate());
-        urlMappingDTO.setUsername(urlMapping.getUser().getUsername());
-        return urlMappingDTO;
+        return new UrlMappingDTO(urlMapping);
     }
 
     private String generateShortUrl() {

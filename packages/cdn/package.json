@@ -1,0 +1,11 @@
+{
+    "name": "@lershi/analytics-cdn",
+    "version": "0.1.0",
+    "main": "index.js",
+    "files": [
+      "index.js"
+    ],
+    "dependencies": {
+      "@lershi/analytics": "^0.1.0"
+    }
+  }

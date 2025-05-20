@@ -6,6 +6,8 @@ import com.url.analytics.dtos.ShortenUrlRequest;
 import com.url.analytics.models.User;
 import com.url.analytics.service.UrlMappingService;
 import com.url.analytics.service.UserService;
+import com.url.analytics.repository.ProjectRepository;
+import com.url.analytics.models.Project;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,14 +26,17 @@ import java.util.Map;
 public class UrlMappingController {
     private UrlMappingService urlMappingService;
     private UserService userService;
+    private ProjectRepository projectRepository;
 
-    // {"originalUrl": "https://example.com"}
+    // {"originalUrl": "https://example.com", "projectId": "123", "customDomain": "https://example.com"}
     @PostMapping("/shorten")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UrlMappingDTO> createShortUrl(@RequestBody ShortenUrlRequest request,
                                                         Principal principal) {
         User user = userService.findByUsername(principal.getName());
-        UrlMappingDTO urlMappingDTO = urlMappingService.createShortUrl(request, user);
+        Project project = projectRepository.findByProjectId(request.getProjectId())
+            .orElseThrow(() -> new IllegalArgumentException("Invalid projectId"));
+        UrlMappingDTO urlMappingDTO = urlMappingService.createShortUrl(request, user, project);
         return ResponseEntity.ok(urlMappingDTO);
     }
 

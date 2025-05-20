@@ -26,4 +26,8 @@ public class UrlMapping extends Auditable {
 
     @Column
     private String customDomain; // optional, for custom domains
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id")
+    private Project project;
 }

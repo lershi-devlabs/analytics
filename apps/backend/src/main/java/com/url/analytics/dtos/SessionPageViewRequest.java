@@ -6,4 +6,5 @@ import lombok.Data;
 public class SessionPageViewRequest {
     private String sessionId;
     private String pageUrl;
+    private String projectId;
 } 

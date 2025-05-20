@@ -35,4 +35,8 @@ public class ClickEvent extends Auditable {
     @ManyToOne
     @JoinColumn(name = "url_mapping_id")
     private UrlMapping urlMapping;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id")
+    private Project project;
 }

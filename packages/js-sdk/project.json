@@ -5,13 +5,9 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
+      "executor": "nx:run-commands",
       "options": {
-        "outputPath": "dist/packages/js-sdk",
-        "main": "packages/js-sdk/src/index.ts",
-        "tsConfig": "packages/js-sdk/tsconfig.json",
-        "assets": ["packages/js-sdk/*.md"]
+        "command": "npm run build"
       }
     },
     "lint": {
@@ -19,10 +15,39 @@
       "outputs": ["{options.outputFile}"]
     },
     "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "executor": "nx:run-commands",
       "options": {
-        "jestConfig": "packages/js-sdk/jest.config.ts"
+        "command": "vitest run"
+      }
+    },
+    "test:watch": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm run test:watch"
+      }
+    },
+    "changeset": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm run changeset"
+      }
+    },
+    "version-packages": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm run version-packages"
+      }
+    },
+    "release": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm run release"
+      }
+    },
+    "prepublishOnly": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm run prepublishOnly"
       }
     }
   },

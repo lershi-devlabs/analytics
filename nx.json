@@ -7,7 +7,7 @@
   },
   "nxCloudId": "682ba9ba8edfc91008b49649",
   "targetDefaults": {
-    "build": {
+        "build": {
       "dependsOn": ["^build"],
       "inputs": ["production", "^production"]
     },
@@ -16,6 +16,6 @@
     },
     "lint": {
       "inputs": ["default", "{workspaceRoot}/.eslintrc.json"]
+      }
     }
-  }
 }

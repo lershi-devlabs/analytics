@@ -6,4 +6,5 @@ import lombok.Data;
 public class SessionEndRequest {
     private String sessionId;
     private String lastPageUrl;
+    private String projectId;
 } 

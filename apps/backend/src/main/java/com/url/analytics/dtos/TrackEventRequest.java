@@ -6,4 +6,5 @@ import lombok.Data;
 public class TrackEventRequest {
     private String eventName;
     private String eventData;
+    private String projectId;
 } 

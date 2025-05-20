@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Optional;
@@ -36,7 +36,7 @@ public class CustomDomainService {
         try {
             // Use a public DNS API for TXT lookup (practical for MVP)
             String apiUrl = "https://dns.google/resolve?name=_shortener-verification." + domain + "&type=TXT";
-            HttpURLConnection conn = (HttpURLConnection) new URL(apiUrl).openConnection();
+            HttpURLConnection conn = (HttpURLConnection) new URI(apiUrl).toURL().openConnection();
             conn.setRequestMethod("GET");
             conn.setConnectTimeout(3000);
             conn.setReadTimeout(3000);
@@ -59,7 +59,7 @@ public class CustomDomainService {
 
     private boolean checkDomainHasWebsite(String domain) {
         try {
-            HttpURLConnection conn = (HttpURLConnection) new URL("http://" + domain + "/").openConnection();
+            HttpURLConnection conn = (HttpURLConnection) new URI("http", domain, "/", null).toURL().openConnection();
             conn.setRequestMethod("GET");
             conn.setConnectTimeout(2000);
             conn.setReadTimeout(2000);
