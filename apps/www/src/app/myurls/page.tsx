@@ -15,6 +15,8 @@ import {
 } from "@tanstack/react-table";
 import { ChevronDown, ChevronFirst, ChevronLast, ChevronLeft, ChevronRight, ChevronUp, CircleX, ListFilter, Trash, Ellipsis } from "lucide-react";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Client } from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
 
 interface Url {
   id: number;
@@ -150,6 +152,35 @@ export default function MyUrlsPage() {
     fetchUrls();
   }, []);
 
+  useEffect(() => {
+    // Only run on client
+    if (typeof window === "undefined") return;
+
+    const client = new Client({
+      webSocketFactory: () => new SockJS('http://localhost:8080/ws'),
+      reconnectDelay: 5000,
+    });
+
+    client.onConnect = () => {
+      client.subscribe("/topic/clicks", (message) => {
+        const updatedUrl = JSON.parse(message.body);
+        setData((prevData) =>
+          prevData.map((url) =>
+            url.id === updatedUrl.id
+              ? { ...url, clickCount: updatedUrl.clickCount }
+              : url
+          )
+        );
+      });
+    };
+
+    client.activate();
+
+    return () => {
+      client.deactivate();
+    };
+  }, []);
+
   const table = useReactTable({
     data,
     columns,
@@ -194,7 +225,7 @@ export default function MyUrlsPage() {
             </div>
             {Boolean(table.getColumn("shortUrl")?.getFilterValue()) && (
               <button
-                className="absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-lg text-muted-foreground/80 outline-offset-2 transition-colors hover:text-foreground focus:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring/70 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+                className="absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-lg text-muted-foreground/80 outline-offset-2 transition-colors hover:text-foreground focus:z-10 focus-visible:outline-2 focus-visible:outline-ring/70 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
                 aria-label="Clear filter"
                 onClick={() => {
                   table.getColumn("shortUrl")?.setFilterValue("");

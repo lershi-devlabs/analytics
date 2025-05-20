@@ -10,6 +10,7 @@ import com.url.analytics.models.Project;
 import com.url.analytics.repository.ClickEventRepository;
 import com.url.analytics.repository.UrlMappingRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -26,6 +27,7 @@ public class UrlMappingService {
 
     private UrlMappingRepository urlMappingRepository;
     private ClickEventRepository clickEventRepository;
+    private final SimpMessagingTemplate messagingTemplate;
 
     public UrlMappingDTO createShortUrl(ShortenUrlRequest request, User user, Project project) {
         String alias = request.getCustomAlias();
@@ -118,6 +120,8 @@ public class UrlMappingService {
             if (!recentClick) {
                 urlMapping.setClickCount(urlMapping.getClickCount() + 1);
                 urlMappingRepository.save(urlMapping);
+                // Send update to WebSocket topic
+                messagingTemplate.convertAndSend("/topic/clicks", new UrlMappingDTO(urlMapping));
             }
         }
         return urlMapping;

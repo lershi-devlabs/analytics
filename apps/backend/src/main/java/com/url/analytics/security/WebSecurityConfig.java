@@ -67,9 +67,7 @@ public class WebSecurityConfig {
                     "/{shortUrl}",
                     "/api/urls/**",
                     "/api/public/**",
-                    "/v3/api-docs/**",
-                    "/swagger-ui/**",
-                    "/swagger-ui.html"
+                    "/ws/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             )
