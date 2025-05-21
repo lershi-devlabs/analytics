@@ -1,11 +1,16 @@
 import { getProjectId } from './project';
 
 let sessionId: string | undefined;
+let apiUrl = 'http://localhost:8080';
+
+export function configure(options: { apiUrl: string }) {
+  apiUrl = options.apiUrl;
+}
 
 export async function startSession() {
   const projectId = getProjectId();
   if (!projectId) return;
-  const res = await fetch('/api/sessions/start', {
+  const res = await fetch(`${apiUrl}/api/sessions/start`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -21,7 +26,7 @@ export async function startSession() {
 export async function pageView() {
   const projectId = getProjectId();
   if (!projectId || !sessionId) return;
-  await fetch('/api/sessions/pageview', {
+  await fetch(`${apiUrl}/api/sessions/pageview`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -35,7 +40,7 @@ export async function pageView() {
 export async function endSession() {
   const projectId = getProjectId();
   if (!projectId || !sessionId) return;
-  await fetch('/api/sessions/end', {
+  await fetch(`${apiUrl}/api/sessions/end`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
