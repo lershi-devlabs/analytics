@@ -16,4 +16,4 @@ RUN apk add --no-cache bash
 EXPOSE 8080
 
 # Wait for database to be ready before starting Spring Boot
-ENTRYPOINT ["/wait-for-it.sh", "${MYSQL_HOST:-db}:${MYSQL_PORT:-3306}", "-t", "60", "--", "java", "-jar", "app.jar"] 
+ENTRYPOINT /wait-for-it.sh "${MYSQL_HOST:-db}:${MYSQL_PORT:-3306}" -t 60 -- java -jar app.jar 
