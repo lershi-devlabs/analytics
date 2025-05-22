@@ -1,6 +1,6 @@
 {
     "name": "lershi-analytics-next",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "type": "module",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
@@ -8,7 +8,7 @@
         "dist"
     ],
     "dependencies": {
-        "lershi-analytics": "^0.1.0",
+        "lershi-analytics": "^0.2.0",
         "react": "^18.0.0"
     },
     "scripts": {
@@ -16,9 +16,13 @@
         "clean": "rm -rf dist",
         "prepublishOnly": "npm run build",
         "prepare": "npm run build",
-        "test": "echo \"No tests specified\" && exit 0"
+        "test": "echo \"No tests specified\" && exit 0",
+        "changeset": "changeset",
+        "version-packages": "changeset version && npm run build",
+        "release": "npm publish --access public"
     },
     "devDependencies": {
-        "@types/react": "^19.1.5"
+        "@types/react": "^19.1.5",
+        "@changesets/cli": "^2.26.2"
     }
 }

@@ -14,6 +14,10 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.UUID;
 import com.url.analytics.dtos.SessionDTO;
+import com.url.analytics.dtos.LinkClickRequest;
+import com.url.analytics.repository.LinkClickRepository;
+import com.url.analytics.models.LinkClick;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/sessions")
@@ -21,6 +25,7 @@ import com.url.analytics.dtos.SessionDTO;
 public class SessionController {
     private final SessionService sessionService;
     private final ProjectRepository projectRepository;
+    private final LinkClickRepository linkClickRepository;
 
     @PostMapping("/start")
     public ResponseEntity<SessionDTO> startSession(@RequestBody SessionStartRequest req, HttpServletRequest request) {
@@ -45,5 +50,19 @@ public class SessionController {
             .orElseThrow(() -> new IllegalArgumentException("Invalid projectId"));
         Session session = sessionService.endSession(UUID.fromString(req.getSessionId()), req.getLastPageUrl(), project);
         return ResponseEntity.ok(new SessionDTO(session));
+    }
+
+    @PostMapping("/click")
+    public ResponseEntity<?> trackLinkClick(@RequestBody LinkClickRequest req, HttpServletRequest request) {
+        String ipAddress = request.getRemoteAddr();
+        LinkClick click = new LinkClick();
+        click.setProjectId(req.getProjectId());
+        click.setUrl(req.getUrl());
+        click.setType(req.getType());
+        click.setSessionId(req.getSessionId());
+        click.setIpAddress(ipAddress);
+        click.setTimestamp(LocalDateTime.now());
+        linkClickRepository.save(click);
+        return ResponseEntity.ok().build();
     }
 } 
