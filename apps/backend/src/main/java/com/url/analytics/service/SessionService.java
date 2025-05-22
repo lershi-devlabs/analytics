@@ -21,7 +21,7 @@ public class SessionService {
     public Session getOrCreateSession(String ipAddress, String userAgent, Project project, String entryPage, String referrer) {
         LocalDateTime timeoutThreshold = LocalDateTime.now().minusMinutes(SESSION_TIMEOUT_MINUTES);
 
-        Optional<Session> existingSession = sessionRepository.findActiveSession(
+        Optional<Session> existingSession = sessionRepository.findFirstByIpAddressAndUserAgentAndLastActivityTimeAfterAndIsActiveTrue(
             ipAddress, userAgent, timeoutThreshold);
 
         if (existingSession.isPresent()) {

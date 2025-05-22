@@ -15,15 +15,8 @@ import java.util.UUID;
 @Repository
 public interface SessionRepository extends JpaRepository<Session, UUID> {
     
-    @Query("SELECT s FROM Session s WHERE s.ipAddress = :ipAddress " +
-           "AND s.userAgent = :userAgent " +
-           "AND s.lastActivityTime > :timeoutThreshold " +
-           "AND s.active = true")
-    Optional<Session> findActiveSession(
-        @Param("ipAddress") String ipAddress,
-        @Param("userAgent") String userAgent,
-        @Param("timeoutThreshold") LocalDateTime timeoutThreshold
-    );
+    Optional<Session> findFirstByIpAddressAndUserAgentAndLastActivityTimeAfterAndIsActiveTrue(
+        String ipAddress, String userAgent, LocalDateTime lastActivityTime);
 
     @Query("SELECT COUNT(s) FROM Session s WHERE s.entryPage = :url " +
            "AND s.startTime BETWEEN :startDate AND :endDate")
