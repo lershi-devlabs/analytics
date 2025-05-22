@@ -67,6 +67,11 @@ public class WebSecurityConfig {
                     "/{shortUrl}",
                     "/api/urls/**",
                     "/api/public/**",
+                    "/api/projects/**",
+                    "/api/sessions/**",
+                    "/api/analytics/**",
+                    "/api/domains/**",
+                    "/api/events/**", 
                     "/ws/**"
                 ).permitAll()
                 .anyRequest().authenticated()

@@ -1,13 +1,24 @@
 {
-    "name": "@lershi/analytics-next",
+    "name": "lershi-analytics-next",
     "version": "0.1.0",
+    "type": "module",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "files": [
-      "dist"
+        "dist"
     ],
     "dependencies": {
-      "@lershi/analytics": "^0.1.0",
-      "react": "^18.0.0"
+        "lershi-analytics": "^0.1.0",
+        "react": "^18.0.0"
+    },
+    "scripts": {
+        "build": "tsup src/index.ts --format esm,cjs --dts --out-dir dist",
+        "clean": "rm -rf dist",
+        "prepublishOnly": "npm run build",
+        "prepare": "npm run build",
+        "test": "echo \"No tests specified\" && exit 0"
+    },
+    "devDependencies": {
+        "@types/react": "^19.1.5"
     }
-  }
+}

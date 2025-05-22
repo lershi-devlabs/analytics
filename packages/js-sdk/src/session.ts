@@ -1,7 +1,7 @@
 import { getProjectId } from './project';
 
 let sessionId: string | undefined;
-let apiUrl = 'http://localhost:8080';
+let apiUrl = 'https://analytics-production-df31.up.railway.app';
 
 export function configure(options: { apiUrl: string }) {
   apiUrl = options.apiUrl;
