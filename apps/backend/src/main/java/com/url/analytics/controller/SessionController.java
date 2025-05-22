@@ -10,6 +10,7 @@ import com.url.analytics.models.Project;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.UUID;
 
@@ -21,10 +22,11 @@ public class SessionController {
     private final ProjectRepository projectRepository;
 
     @PostMapping("/start")
-    public ResponseEntity<Session> startSession(@RequestBody SessionStartRequest req) {
+    public ResponseEntity<Session> startSession(@RequestBody SessionStartRequest req, HttpServletRequest request) {
         Project project = projectRepository.findByProjectId(req.getProjectId())
             .orElseThrow(() -> new IllegalArgumentException("Invalid projectId"));
-        Session session = sessionService.getOrCreateSession(req.getIpAddress(), req.getUserAgent(), project);
+        String ipAddress = request.getRemoteAddr();
+        Session session = sessionService.getOrCreateSession(ipAddress, req.getUserAgent(), project);
         return ResponseEntity.ok(session);
     }
 
