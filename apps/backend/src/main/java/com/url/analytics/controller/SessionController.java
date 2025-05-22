@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.UUID;
+import com.url.analytics.dtos.SessionDTO;
 
 @RestController
 @RequestMapping("/api/sessions")
@@ -22,27 +23,27 @@ public class SessionController {
     private final ProjectRepository projectRepository;
 
     @PostMapping("/start")
-    public ResponseEntity<Session> startSession(@RequestBody SessionStartRequest req, HttpServletRequest request) {
+    public ResponseEntity<SessionDTO> startSession(@RequestBody SessionStartRequest req, HttpServletRequest request) {
         Project project = projectRepository.findByProjectId(req.getProjectId())
             .orElseThrow(() -> new IllegalArgumentException("Invalid projectId"));
         String ipAddress = request.getRemoteAddr();
         Session session = sessionService.getOrCreateSession(ipAddress, req.getUserAgent(), project);
-        return ResponseEntity.ok(session);
+        return ResponseEntity.ok(new SessionDTO(session));
     }
 
     @PostMapping("/pageview")
-    public ResponseEntity<Session> pageView(@RequestBody SessionPageViewRequest req) {
+    public ResponseEntity<SessionDTO> pageView(@RequestBody SessionPageViewRequest req) {
         Project project = projectRepository.findByProjectId(req.getProjectId())
             .orElseThrow(() -> new IllegalArgumentException("Invalid projectId"));
         Session session = sessionService.incrementPageView(UUID.fromString(req.getSessionId()), req.getPageUrl(), project);
-        return ResponseEntity.ok(session);
+        return ResponseEntity.ok(new SessionDTO(session));
     }
 
     @PostMapping("/end")
-    public ResponseEntity<Session> endSession(@RequestBody SessionEndRequest req) {
+    public ResponseEntity<SessionDTO> endSession(@RequestBody SessionEndRequest req) {
         Project project = projectRepository.findByProjectId(req.getProjectId())
             .orElseThrow(() -> new IllegalArgumentException("Invalid projectId"));
         Session session = sessionService.endSession(UUID.fromString(req.getSessionId()), req.getLastPageUrl(), project);
-        return ResponseEntity.ok(session);
+        return ResponseEntity.ok(new SessionDTO(session));
     }
 } 
