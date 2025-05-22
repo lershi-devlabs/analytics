@@ -18,7 +18,7 @@ public class SessionService {
     private static final int SESSION_TIMEOUT_MINUTES = 30;
 
     @Transactional
-    public Session getOrCreateSession(String ipAddress, String userAgent, Project project) {
+    public Session getOrCreateSession(String ipAddress, String userAgent, Project project, String entryPage, String referrer) {
         LocalDateTime timeoutThreshold = LocalDateTime.now().minusMinutes(SESSION_TIMEOUT_MINUTES);
 
         Optional<Session> existingSession = sessionRepository.findActiveSession(
@@ -37,6 +37,10 @@ public class SessionService {
         newSession.setLastActivityTime(LocalDateTime.now());
         newSession.setActive(true);
         newSession.setProject(project);
+        newSession.setEntryPage(entryPage);
+        newSession.setReferrer(referrer);
+        // Optionally set user if available
+        // newSession.setUser(user);
 
         return sessionRepository.save(newSession);
     }

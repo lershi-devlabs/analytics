@@ -31,7 +31,7 @@ public class Session extends Auditable {
     private LocalDateTime lastActivityTime;
 
     @Column(name = "is_active", nullable = false)
-    private boolean active;
+    private boolean isActive;
 
     @Column
     private String referrer;

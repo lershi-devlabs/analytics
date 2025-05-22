@@ -32,7 +32,13 @@ public class SessionController {
         Project project = projectRepository.findByProjectId(req.getProjectId())
             .orElseThrow(() -> new IllegalArgumentException("Invalid projectId"));
         String ipAddress = request.getRemoteAddr();
-        Session session = sessionService.getOrCreateSession(ipAddress, req.getUserAgent(), project);
+        Session session = sessionService.getOrCreateSession(
+            ipAddress,
+            req.getUserAgent(),
+            project,
+            req.getEntryPage(),
+            req.getReferrer()
+        );
         return ResponseEntity.ok(new SessionDTO(session));
     }
 

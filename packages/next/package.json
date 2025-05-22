@@ -1,6 +1,6 @@
 {
     "name": "lershi-analytics-next",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "type": "module",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
@@ -8,7 +8,7 @@
         "dist"
     ],
     "dependencies": {
-        "lershi-analytics": "^0.2.0",
+        "lershi-analytics": "^0.3.0",
         "react": "^18.0.0"
     },
     "scripts": {

@@ -1,8 +1,8 @@
 "use client";
 import { useEffect } from 'react';
-import { inject, pageView, endSession } from 'lershi-analytics';
+import { inject, pageView, endSession, trackClick } from 'lershi-analytics';
 
-export function Analytics({ projectId }: { projectId: string }) {
+export function Analytics({ projectId }: { projectId: string}) {
   useEffect(() => {
     inject({ projectId });
     // Track initial pageview
@@ -22,15 +22,11 @@ export function Analytics({ projectId }: { projectId: string }) {
           const anchor = target as HTMLAnchorElement;
           if (anchor.href) {
             const isInternal = anchor.href.includes(window.location.host);
-            fetch('/api/sessions/click', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                projectId,
-                url: anchor.href,
-                type: isInternal ? 'internal' : 'external',
-                // sessionId: getSessionId(),
-              }),
+            trackClick({
+              projectId,
+              url: anchor.href,
+              type: isInternal ? 'internal' : 'external',
+              // sessionId: getSessionId(),
             });
           }
         }

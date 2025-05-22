@@ -16,7 +16,8 @@ export async function startSession() {
     body: JSON.stringify({
       projectId,
       userAgent: navigator.userAgent,
-      referrer: document.referrer,
+      entryPage: window.location.pathname,
+      referrer: document.referrer || null,
     }),
   });
   const data = await res.json();
@@ -47,6 +48,29 @@ export async function endSession() {
       projectId,
       sessionId,
       lastPageUrl: window.location.pathname,
+    }),
+  });
+}
+
+export async function trackClick({
+  projectId,
+  url,
+  type,
+  sessionId,
+}: {
+  projectId: string;
+  url: string;
+  type: 'internal' | 'external';
+  sessionId?: string;
+}) {
+  await fetch(`${apiUrl}/api/sessions/click`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      projectId,
+      url,
+      type,
+      sessionId,
     }),
   });
 } 
