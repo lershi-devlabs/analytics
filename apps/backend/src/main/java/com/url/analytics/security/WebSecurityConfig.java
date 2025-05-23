@@ -31,11 +31,7 @@ import java.util.Arrays;
 public class WebSecurityConfig {
     private final UserDetailsServiceImpl userDetailsService;
     private final JwtUtils jwtUtils;
-
-    @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter(UserDetailsService userDetailsService) {
-        return new JwtAuthenticationFilter(jwtUtils, userDetailsService);
-    }
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -81,9 +77,11 @@ public class WebSecurityConfig {
                 ).permitAll()
                 .anyRequest().authenticated()
             )
-            .authenticationProvider(authenticationProvider())
-            .addFilterBefore(jwtCookieAuthFilter(), JwtAuthenticationFilter.class)
-            .addFilterBefore(jwtAuthenticationFilter(userDetailsService), UsernamePasswordAuthenticationFilter.class);
+            .authenticationProvider(authenticationProvider());
+
+        // Add filters in the correct order
+        http.addFilterBefore(jwtCookieAuthFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
