@@ -69,8 +69,14 @@ public class AuthController {
 
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<UserDTO> getCurrentUser(Principal principal) {
+    public ResponseEntity<?> getCurrentUser(Principal principal) {
+        if (principal == null || principal.getName() == null) {
+            return ResponseEntity.status(401).body("Not authenticated");
+        }
         User user = userservice.findByUsername(principal.getName());
+        if (user == null) {
+            return ResponseEntity.status(404).body("User not found");
+        }
         return ResponseEntity.ok(new UserDTO(user));
     }
 }
