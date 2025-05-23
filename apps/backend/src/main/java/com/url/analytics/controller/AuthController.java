@@ -7,11 +7,15 @@ import com.url.analytics.models.Role;
 import com.url.analytics.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
+import java.security.Principal;
+import com.url.analytics.dtos.UserDTO;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -38,5 +42,12 @@ public class AuthController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @GetMapping("/me")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<UserDTO> getCurrentUser(Principal principal) {
+        User user = userservice.findByUsername(principal.getName());
+        return ResponseEntity.ok(new UserDTO(user));
     }
 }
