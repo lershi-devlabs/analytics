@@ -16,7 +16,7 @@ public class SessionDTO {
     private String exitPage;
     private Integer pageViews;
     private Integer bounceCount;
-    private Long sessionDuration;
+    private Double sessionDuration;
 
     public SessionDTO(Session session) {
         this.id = session.getId() != null ? session.getId().toString() : null;
