@@ -31,10 +31,9 @@ public class AuthController {
         var auth = userservice.authenticateUser(loginRequest);
         ResponseCookie cookie = ResponseCookie.from("token", auth.getToken())
             .httpOnly(true)
-            .secure(false) // set to true in production with HTTPS
-            .sameSite("Lax") // Changed from Strict to Lax for local development
+            .secure(true) // Always true in production
+            .sameSite("None") // Required for cross-site cookies
             .path("/")
-            .domain("localhost") // Add domain for local development
             .build();
         response.addHeader("Set-Cookie", cookie.toString());
         return ResponseEntity.ok().body("Login successful");
@@ -59,10 +58,9 @@ public class AuthController {
     public ResponseEntity<?> logout(HttpServletResponse response) {
         ResponseCookie cookie = ResponseCookie.from("token", "")
             .httpOnly(true)
-            .secure(false) // set to true in production with HTTPS
-            .sameSite("Lax") // Changed from Strict to Lax for local development
+            .secure(true) // Always true in production
+            .sameSite("None") // Required for cross-site cookies
             .path("/")
-            .domain("localhost") // Add domain for local development
             .maxAge(0)
             .build();
         response.addHeader("Set-Cookie", cookie.toString());

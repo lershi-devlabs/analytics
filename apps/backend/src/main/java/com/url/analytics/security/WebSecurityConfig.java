@@ -94,11 +94,12 @@ public class WebSecurityConfig {
             "http://localhost:[*]",  // Any localhost port
             "http://127.0.0.1:[*]",  // Any localhost IP
             "https?://[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+\\.[a-zA-Z]{2,}",  // Any domain with subdomain
-            "https?://[a-zA-Z0-9-]+\\.[a-zA-Z]{2,}"  // Any domain without subdomain
+            "https?://[a-zA-Z0-9-]+\\.[a-zA-Z]{2,}",  // Any domain without subdomain
+            "https://analytics-production-df31.up.railway.app"  // Production domain
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
-        configuration.setExposedHeaders(Arrays.asList("Set-Cookie"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Cookie"));
+        configuration.setExposedHeaders(Arrays.asList("Set-Cookie", "Authorization"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
         
