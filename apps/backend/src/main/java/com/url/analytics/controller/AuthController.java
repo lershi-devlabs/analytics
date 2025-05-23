@@ -33,6 +33,7 @@ public class AuthController {
             .httpOnly(true)
             .secure(true) // Always true in production
             .sameSite("None") // Required for cross-site cookies
+            .domain("analytics-production-df31.up.railway.app")
             .path("/")
             .build();
         response.addHeader("Set-Cookie", cookie.toString());
@@ -60,6 +61,7 @@ public class AuthController {
             .httpOnly(true)
             .secure(true) // Always true in production
             .sameSite("None") // Required for cross-site cookies
+            .domain("analytics-production-df31.up.railway.app")
             .path("/")
             .maxAge(0)
             .build();
