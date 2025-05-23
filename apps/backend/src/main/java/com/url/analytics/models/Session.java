@@ -49,11 +49,7 @@ public class Session extends Auditable {
     private Integer bounceCount;
 
     @Column
-    private Long sessionDuration; // in seconds
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    private Double sessionDuration; // in seconds
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")

@@ -49,8 +49,7 @@ public class SessionService {
     public void updateSession(Session session) {
         session.setLastActivityTime(LocalDateTime.now());
         session.setSessionDuration(
-            java.time.Duration.between(session.getStartTime(), session.getLastActivityTime())
-                .toMinutes()
+            java.time.Duration.between(session.getStartTime(), session.getLastActivityTime()).toMillis() / 1000.0
         );
         sessionRepository.save(session);
     }
@@ -61,8 +60,7 @@ public class SessionService {
             session.setActive(false);
             session.setLastActivityTime(LocalDateTime.now());
             session.setSessionDuration(
-                java.time.Duration.between(session.getStartTime(), session.getLastActivityTime())
-                    .toMinutes()
+                java.time.Duration.between(session.getStartTime(), session.getLastActivityTime()).toMillis() / 1000.0
             );
             sessionRepository.save(session);
         });
@@ -93,7 +91,7 @@ public class SessionService {
         session.setLastActivityTime(LocalDateTime.now());
         session.setExitPage(lastPageUrl);
         session.setSessionDuration(
-            java.time.Duration.between(session.getStartTime(), session.getLastActivityTime()).toSeconds()
+            java.time.Duration.between(session.getStartTime(), session.getLastActivityTime()).toMillis() / 1000.0
         );
         // Bounce: only 1 page view
         if (session.getPageViews() != null && session.getPageViews() == 1) {
