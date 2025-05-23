@@ -56,6 +56,11 @@ public class WebSecurityConfig {
     }
 
     @Bean
+    public JwtCookieAuthFilter jwtCookieAuthFilter() {
+        return new JwtCookieAuthFilter();
+    }
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
@@ -77,6 +82,7 @@ public class WebSecurityConfig {
                 .anyRequest().authenticated()
             )
             .authenticationProvider(authenticationProvider())
+            .addFilterBefore(jwtCookieAuthFilter(), JwtAuthenticationFilter.class)
             .addFilterBefore(jwtAuthenticationFilter(userDetailsService), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

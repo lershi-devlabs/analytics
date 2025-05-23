@@ -16,6 +16,8 @@ import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import java.security.Principal;
 import com.url.analytics.dtos.UserDTO;
+import org.springframework.http.ResponseCookie;
+import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -25,8 +27,16 @@ public class AuthController {
     private UserService userservice;
 
     @PostMapping("/public/login")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest){
-        return ResponseEntity.ok(userservice.authenticateUser(loginRequest));
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse response){
+        var auth = userservice.authenticateUser(loginRequest);
+        ResponseCookie cookie = ResponseCookie.from("token", auth.getToken())
+            .httpOnly(true)
+            .secure(true) // set to true in production with HTTPS
+            .sameSite("Strict")
+            .path("/")
+            .build();
+        response.addHeader("Set-Cookie", cookie.toString());
+        return ResponseEntity.ok().body("Login successful");
     }
 
     @PostMapping("/public/register")
@@ -42,6 +52,19 @@ public class AuthController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletResponse response) {
+        ResponseCookie cookie = ResponseCookie.from("token", "")
+            .httpOnly(true)
+            .secure(false) // set to true in production with HTTPS
+            .sameSite("Strict")
+            .path("/")
+            .maxAge(0)
+            .build();
+        response.addHeader("Set-Cookie", cookie.toString());
+        return ResponseEntity.ok().body("Logged out");
     }
 
     @GetMapping("/me")
