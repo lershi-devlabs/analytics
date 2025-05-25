@@ -31,9 +31,8 @@ public class AuthController {
         var auth = userservice.authenticateUser(loginRequest);
         ResponseCookie cookie = ResponseCookie.from("token", auth.getToken())
             .httpOnly(true)
-            .secure(true) // Always true in production
-            .sameSite("None") // Required for cross-site cookies
-            .domain("analytics-production-df31.up.railway.app")
+            .secure(true)
+            .sameSite("None")
             .path("/")
             .build();
         response.addHeader("Set-Cookie", cookie.toString());
@@ -59,9 +58,8 @@ public class AuthController {
     public ResponseEntity<?> logout(HttpServletResponse response) {
         ResponseCookie cookie = ResponseCookie.from("token", "")
             .httpOnly(true)
-            .secure(true) // Always true in production
-            .sameSite("None") // Required for cross-site cookies
-            .domain("analytics-production-df31.up.railway.app")
+            .secure(true)
+            .sameSite("None")
             .path("/")
             .maxAge(0)
             .build();
